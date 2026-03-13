@@ -27,6 +27,8 @@ pros=[
     Products(id = 5 , name = "Mouse" , price = 25 , description = "Ergonomic wireless mouse.")
 ]
 
+
+
 @app.get("/pro")
 
 def products():
@@ -89,13 +91,22 @@ def deletes(id :int):
             return pros[i] 
     return "Deleted Successfully"
 
-
-
 # DB Storage..
 
 @app.get("/dbs")
 
 def store():
     db=session()
-    db.query()
-    return 
+
+    #everytime the server is relaod the same is pushed to the dband it cause the error .to avoid that we count and write the data at the first time of the process.
+
+    count=db.query(dbmodel.Products).count()
+
+    if count ==0:
+
+        for i in pros:
+            db.add(dbmodel.Products(**i.model_dump()))
+
+        db.commit()  #in the dbconfig line 7 mention as autocommit=false , here we commit it
+
+store()
